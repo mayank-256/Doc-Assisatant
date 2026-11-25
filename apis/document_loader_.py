@@ -1,6 +1,6 @@
 from pathlib import Path
-# import fitz ouutdated 
-import pymupdf #mew
+# import fitz #ouutdated 
+import pymupdf #new
 from docx import Document as DocxDocument
 from langchain_core.documents import Document
 

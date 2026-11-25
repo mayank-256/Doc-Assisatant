@@ -13,6 +13,7 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 
 from document_loader_ import load_document
 from chunking_ import split_documents, store_chunks
+from doc_management import list_documents,add_documents,update_document,delete_document
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # EMBEDDING_MODEL = "sentence-transformer/all-MiniLM-L6-v2"
@@ -52,63 +53,53 @@ def initialize_llm():
     print("LLM initialized...")
     return llm
 
-# def test_chunking():
-#     file_psth = Path("documents/sample.md")
-
-#     documents = load_document(file_psth)
-
-#     print("Original Documents: ", len(documents))
-
-#     chunks = split_documents(documents)
-
-#     print("total chunks: ", len(chunks))
-
-#     for index, chunk in enumerate(chunks):
-
-#         print("\n" + "=" * 50)
-
-#         print(f"CHUNK {index}")
-
-#         print("Metadata:", chunk.metadata)
-
-#         print("Content:")
-#         print(chunk.page_content)
-
-#         print("Characters:", len(chunk.page_content))
 
 def main():
-    # test_chunking()
-
-    
     embedding_function = initialize_embeddings()
-    collection = initialize_chroma(
-        embedding_function
+    collection = initialize_chroma(embedding_function)
+
+    print("\nBefore deletion:")
+    list_documents(collection)
+
+    print("\nDeleting python.md...")
+
+    delete_document(
+        document_name="python.md",
+        collection=collection
     )
 
-    # llm = initialize_llm()
+    print("\nAfter deletion:")
+    list_documents(collection)
 
-    documents = load_document("documents/fastapi.pdf")
-
-    chunks = split_documents(documents)
-
-    print("Total chunks", len(chunks))
-
-    store_chunks(chunks, collection)
-
-    print(
-        "Total records in ChromaDB:",
-        collection.count()
-    )
-    # response = llm.invoke(
-    #     "Explain what a document assistant does in one sentence."
-    # )
-
-    # print("\nGroq Response:")
-    # print(response.content)
-
-    # print("\nTotal stored chunks:", collection.count())
+    print("\nTotal ChromaDB records:", collection.count())
 
 
+# def main():
+
+#     embedding_function = initialize_embeddings()
+#     collection = initialize_chroma(embedding_function)
+#     add_documents("test_files/python.md", collection)
+#     list_documents(collection)
+
+    # files = [
+    #     "documents/sample.md",
+    #     "documents/untitled.pdf"
+    # ]
+
+    # for file_path in files:
+    #     print(f"\nProcessing: {file_path}")
+
+    #     documents = load_document(file_path)
+    #     chunks = split_documents(documents)
+
+    #     print("Extracted documents:", len(documents))
+    #     print("Generated chunks:", len(chunks))
+
+    #     store_chunks(chunks, collection)
+
+    # print("\nTotal records in ChromaDB:", collection.count())
+
+    # list_documents(collection)
 
 
 if __name__ == "__main__":
